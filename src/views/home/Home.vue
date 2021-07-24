@@ -6,7 +6,6 @@
         <el-aside width="200px">
           <el-menu
             :uniqueOpened="true"
-            default-active="/25"
             class="el-menu-vertical-demo"
             background-color="#d3dce6"
             text-color="#333"
@@ -15,9 +14,9 @@
           >
             <!-- 一级 -->
             <el-submenu
-              :index="items.id"
+              :index="items.id + ''"
               v-for="items in menusList"
-              :key="items.id"
+              :key="items.id + ''"
             >
               <template #title>
                 <i class="el-icon-location"></i>
@@ -27,7 +26,7 @@
               <el-menu-item
                 :index="'/' + item.id"
                 v-for="item in items.children"
-                :key="item.id"
+                :key="item.id + ''"
               >
                 <template #title>
                   <!-- <i class="el-icon-location"></i> -->
@@ -57,9 +56,9 @@ export default {
   watch: {},
   methods: {},
   mounted() {
+    //获取菜单栏信息
     getMenus().then((res) => {
       this.menusList = res;
-      console.log(res);
     });
   },
 };

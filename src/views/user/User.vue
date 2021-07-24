@@ -10,9 +10,9 @@
         <el-col :span="8">
           <div class="grid-content bg-purple">
             <el-input
-              placeholder="请输入内容"
+              placeholder="通过邮箱信息查找"
               prefix-icon="el-icon-search"
-              @change="search"
+              @change="searchEmail"
               v-model="search"
             >
             </el-input>
@@ -22,15 +22,16 @@
       <el-table :data="tableData" stripe border style="width: 100%">
         <el-table-column type="index"> </el-table-column>
         <el-table-column prop="created_at" label="创建日期"> </el-table-column>
-        <el-table-column prop="name" label="姓名"> </el-table-column>
+        <el-table-column prop="name" label="用户名"> </el-table-column>
         <el-table-column prop="email" label="邮箱"> </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button size="mini" @click="handleEdit(scope.row)">
-              编辑
-            </el-button>
-          </template></el-table-column
-        >
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              @click="handleEdit(scope.row)"
+            ></el-button> </template
+        ></el-table-column>
       </el-table>
       <el-pagination
         layout="prev, pager, next"
@@ -60,7 +61,7 @@
 </template>
 
 <script>
-import { getUserList, getUser, upUser } from "@/network/user";
+import { getUserList, getUser, upUser, searchUser } from "@/network/user";
 
 export default {
   name: "",
@@ -79,27 +80,50 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    //修改用户信息
+    //弹窗获取当前编辑用户信息
     handleEdit(row) {
       this.dialogFormVisible = true;
       this.form.name = row.name;
       this.form.email = row.email;
       this.form.id = row.id;
     },
+    //修改用户信息
     updateuser() {
-      console.log(this.form);
-      //       upuser(id).then((res) => {});
+      const data = {
+        name: this.form.name,
+        email: this.form.email,
+      };
+      upUser(this.form.id, data).then((res) => {
+        if (res.status == 204) {
+          this.dialogFormVisible = false;
+          this.$message.success({
+            message: "修改成功",
+            type: "success",
+          });
+        }
+      });
+      //重新请求修改后的数据
+      getUserList().then((res) => {
+        this.tableData = res.data;
+        this.total = res.meta.pagination.total;
+      });
     },
-    //页面改变是重新去加载
+    //页码改变重新去加载
     currentchange(page) {
       getUser(page).then((res) => {
         this.tableData = res.data;
       });
     },
+    //通过邮箱进行筛选
+    searchEmail() {
+      searchUser(this.search).then((res) => {
+        this.tableData = res.data;
+        this.total = res.meta.pagination.total;
+      });
+    },
   },
   created() {
     getUserList().then((res) => {
-      console.log(res);
       this.tableData = res.data;
       this.total = res.meta.pagination.total;
     });
@@ -114,7 +138,4 @@ export default {
 .el-row {
   margin: 20px 0 30px 0;
 }
-/* .el-form {
-  width: 100px;
-} */
 </style>

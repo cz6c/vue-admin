@@ -33,6 +33,13 @@ export function getUser(page) {
     })
 }
 
+//通过邮箱进行搜索
+export function searchUser(email) {
+    return request({
+        url: '/api/admin/users/?email=' + email
+    })
+}
+
 //修改用户信息
 export function upUser(users, data) {
     return request({

@@ -12,10 +12,46 @@ const routes = [{
     component: () =>
         import ('@/views/home/Home'),
     children: [{
-        path: '/25',
-        component: () =>
-            import ('@/views/user/User')
-    }]
+            path: '/25',
+            component: () =>
+                import ('@/views/user/User')
+        }, {
+            path: '/27',
+            component: () =>
+                import ('@/views/category/Category')
+        },
+        {
+            path: '/28',
+            component: () =>
+                import ('@/views/category/AddCategory')
+        }, {
+            path: '/30',
+            component: () =>
+                import ('@/views/goods/Goods')
+        }, {
+            path: '/31',
+            component: () =>
+                import ('@/views/goods/AddGoods')
+        },
+        {
+            path: '/33',
+            component: () =>
+                import ('@/views/commentary/Commentary')
+        },
+        {
+            path: '/35',
+            component: () =>
+                import ('@/views/order/Order')
+        }, {
+            path: '/37',
+            component: () =>
+                import ('@/views/swipe/Swipe')
+        }, {
+            path: '/38',
+            component: () =>
+                import ('@/views/swipe/AddSwipe')
+        }
+    ]
 }]
 
 const router = createRouter({

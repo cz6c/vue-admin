@@ -10,8 +10,12 @@ import '@/assets/css/normalize.css'
 import ElementPlus from 'element-plus';
 import 'element-plus/lib/theme-chalk/index.css';
 
+//引入树型表格插件
+import ZkTable from 'vue-table-with-tree-grid'
+
 createApp(App)
     .use(store)
     .use(router)
     .use(ElementPlus)
+    .use(ZkTable)
     .mount('#app')
