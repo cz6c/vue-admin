@@ -10,6 +10,12 @@ export function login(data) {
         data
     })
 }
+//获取登录信息
+export function getuser() {
+    return request({
+        url: '/api/admin/user',
+    })
+}
 
 //登出
 export function logout() {
@@ -20,31 +26,35 @@ export function logout() {
 }
 
 //获取用户列表
-export function getUserList() {
+export function getUsers(params) {
     return request({
-        url: '/api/admin/users'
-    })
-}
-
-//跳转分页
-export function getUser(page) {
-    return request({
-        url: '/api/admin/users/?current=' + page
-    })
-}
-
-//通过邮箱进行搜索
-export function searchUser(email) {
-    return request({
-        url: '/api/admin/users/?email=' + email
+        url: '/api/admin/users',
+        params
     })
 }
 
 //修改用户信息
-export function upUser(users, data) {
+export function editUsers(user, data) {
     return request({
-        url: '/api/admin/users/' + users,
+        url: '/api/admin/users/' + user,
         method: 'put',
+        data
+    })
+}
+
+//禁用和启用
+export function isLockUsers(user) {
+    return request({
+        url: '/api/admin/users/' + user + '/lock',
+        method: 'PATCH',
+    })
+}
+
+//添加用户 
+export function addUsers(data) {
+    return request({
+        url: '/api/admin/users',
+        method: 'POST',
         data
     })
 }

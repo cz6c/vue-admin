@@ -1,7 +1,26 @@
 <template>
   <div class="home">
     <el-container>
-      <el-header>Header</el-header>
+      <el-header height="65px">
+        <el-dropdown size="small">
+          <el-button type="primary">
+            <el-avatar :src="user.avatar_url" size="medium"> </el-avatar>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item disabled>
+                用户名：{{ user.name }}
+              </el-dropdown-item>
+              <el-dropdown-item disabled>
+                账号：{{ user.email }}
+              </el-dropdown-item>
+              <el-dropdown-item @click="logout" icon="el-icon-switch-button">
+                注销
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+      </el-header>
       <el-container>
         <el-aside width="200px">
           <el-menu
@@ -44,21 +63,39 @@
 
 <script>
 import { getMenus } from "network/home";
+import { getuser } from "network/user";
 
 export default {
   name: "",
   data() {
     return {
       menusList: [],
+      user: {},
     };
   },
   computed: {},
   watch: {},
-  methods: {},
+  methods: {
+    logout() {
+      //清除本地token
+      window.localStorage.removeItem("token");
+      this.$message({
+        showClose: true,
+        message: "退出成功",
+        type: "success",
+      });
+      //跳转到login
+      this.$router.push("/login");
+    },
+  },
   mounted() {
     //获取菜单栏信息
     getMenus().then((res) => {
       this.menusList = res;
+    });
+    //获取用户登录信息
+    getuser().then((res) => {
+      this.user = res;
     });
   },
 };
@@ -70,6 +107,7 @@ export default {
   color: #333;
   text-align: center;
   line-height: 60px;
+  height: 65px;
 }
 .el-aside {
   background-color: #d3dce6;

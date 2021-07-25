@@ -1,0 +1,12 @@
+/* 所有表格内容居中 */
+
+.cell {
+    text-align: center;
+}
+
+
+/* 卡片距离面包屑导航距离 */
+
+.box-card {
+    margin-top: 30px;
+}

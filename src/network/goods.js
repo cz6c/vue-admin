@@ -27,20 +27,19 @@ export function GoodsIsRecommend(id) {
 }
 
 //修改商品  *************************************
-export function editGoods(id, goods) {
-    console.log(id, goods);
+export function editGoods(id, data) {
     return request({
         url: '/api/admin/goods/' + id,
         method: 'put',
-        goods
+        data
     })
 }
 
 //添加商品
-export function addGoods(goods) {
+export function addGoods(data) {
     return request({
         url: '/api/admin/goods',
         method: 'post',
-        goods
+        data
     })
 }

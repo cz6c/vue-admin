@@ -5,6 +5,7 @@ import store from './store'
 
 //引入全局css
 import '@/assets/css/normalize.css'
+import '@/assets/css/public.css'
 
 //引入element 组件
 import ElementPlus from 'element-plus';

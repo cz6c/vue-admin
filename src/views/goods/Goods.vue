@@ -14,12 +14,14 @@
               prefix-icon="el-icon-search"
               @change="searchgoods"
               v-model="params.title"
+              clearable
             >
             </el-input>
           </div>
         </el-col>
       </el-row>
       <el-table :data="tableData" stripe border style="width: 100%">
+        <el-table-column type="index"> </el-table-column>
         <el-table-column label="商品图片" width="120">
           <template #default="scope">
             <img
@@ -181,6 +183,7 @@ export default {
           message: "修改成功",
           type: "success",
         });
+        this.getGoodsList();
       });
     },
     isrecommend(e) {
@@ -190,11 +193,11 @@ export default {
           message: "修改成功",
           type: "success",
         });
+        this.getGoodsList();
       });
     },
-    //初始化商品数据
+    //编辑弹窗初始化商品数据
     handleEdit(e) {
-      console.log(e);
       this.dialogFormVisible = true;
       this.id = e.id;
       this.goods.category_id = e.category_id;
@@ -204,18 +207,17 @@ export default {
       this.goods.stock = e.stock;
       this.goods.cover = e.cover;
       this.goods.details = e.details;
-      console.log(this.goods);
     },
     //修改商品数据   ******************************
     editTure() {
       editGoods(this.id, this.goods).then((res) => {
-        console.log(res);
         this.$message({
           showClose: true,
           message: "修改成功",
           type: "success",
         });
         this.dialogFormVisible = false;
+        this.getGoodsList();
       });
     },
   },
@@ -226,9 +228,6 @@ export default {
 </script>
 
 <style scoped>
-.box-card {
-  margin-top: 30px;
-}
 .el-row {
   margin: 20px 0 30px 0;
 }
