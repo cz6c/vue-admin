@@ -2,10 +2,16 @@ import { request } from './request'
 
 
 
-//获取分类列表
+//获取全部分类列表
 export function getCategory() {
     return request({
         url: '/api/admin/category?type=all',
+    })
+}
+//获取非禁用分类列表
+export function Category() {
+    return request({
+        url: '/api/admin/category',
     })
 }
 

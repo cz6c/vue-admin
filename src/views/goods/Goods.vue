@@ -1,10 +1,12 @@
 <template>
   <div>
+    <!-- 面包屑 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
       <el-breadcrumb-item>商品列表</el-breadcrumb-item>
     </el-breadcrumb>
+    <!-- 卡片主体 -->
     <el-card class="box-card">
       <el-row :gutter="20">
         <el-col :span="8">
@@ -20,6 +22,7 @@
           </div>
         </el-col>
       </el-row>
+      <!-- 列表区 -->
       <el-table :data="tableData" stripe border style="width: 100%">
         <el-table-column type="index"> </el-table-column>
         <el-table-column label="商品图片" width="120">
@@ -69,6 +72,7 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页区域 -->
       <el-pagination
         layout="prev, pager, next"
         :total="total"
@@ -77,28 +81,34 @@
       </el-pagination>
     </el-card>
     <!-- 编辑弹窗 -->
-    <el-dialog title="修改用户信息" v-model="dialogFormVisible" width="50%">
-      <el-form :model="goods" label-width="60px">
-        <el-form-item label="所属分类">
-          <el-input v-model="goods.category_id"></el-input>
+    <el-dialog title="修改商品信息" v-model="dialogFormVisible" width="50%">
+      <el-form label-width="160px" :model="goods" :rules="rules" ref="form">
+        <el-form-item label="所属分类" prop="category_id">
+          <el-cascader
+            v-model="goods.category_id"
+            :options="options"
+            :props="props"
+            clearable
+            placeholder="请选择分类"
+          ></el-cascader>
         </el-form-item>
-        <el-form-item label="标题">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="goods.title"></el-input>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item label="描述" prop="description">
           <el-input v-model="goods.description"></el-input>
         </el-form-item>
-        <el-form-item label="价格">
-          <el-input v-model="goods.price"></el-input>
+        <el-form-item label="价格" prop="price">
+          <el-input v-model="goods.price" type="number"></el-input>
         </el-form-item>
-        <el-form-item label="库存">
-          <el-input v-model="goods.stock"></el-input>
+        <el-form-item label="库存" prop="stock">
+          <el-input v-model="goods.stock" type="number"></el-input>
         </el-form-item>
-        <el-form-item label="封面图">
+        <el-form-item label="封面图" prop="cover">
           <el-input v-model="goods.cover"></el-input>
         </el-form-item>
-        <el-form-item label="详情">
-          <el-input v-model="goods.details"></el-input>
+        <el-form-item label="详情" prop="details">
+          <el-input type="textarea" v-model="goods.details"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -119,20 +129,29 @@ import {
   editGoods,
 } from "@/network/goods";
 
+import { Category } from "network/category";
+
+import { toBoolean } from "@/methods";
+
 export default {
   name: "",
   data() {
     return {
+      //列表数据
       tableData: [],
       total: 0,
+      //query请求
       params: {
         current: "",
         title: "",
       },
+      //弹窗数据
       dialogFormVisible: false,
+      //商品id
       id: "",
+      //编辑商品数据
       goods: {
-        category_id: "",
+        category_id: [],
         title: "",
         description: "",
         price: "",
@@ -140,10 +159,29 @@ export default {
         cover: "",
         details: "",
       },
+      //配置级联下拉的值
+      props: {
+        expandTrigger: "hover",
+        value: "id",
+        label: "name",
+      },
+      options: [],
+      //表单验证
+      rules: {
+        category_id: [
+          { required: true, message: "请选择商品分类", trigger: "blur" },
+        ],
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        description: [
+          { required: true, message: "请输入描述", trigger: "blur" },
+        ],
+        price: [{ required: true, message: "请输入价格", trigger: "blur" }],
+        stock: [{ required: true, message: "请输入库存", trigger: "blur" }],
+        cover: [{ required: true, message: "请导入封面图", trigger: "blur" }],
+        details: [{ required: true, message: "请输入详情", trigger: "blur" }],
+      },
     };
   },
-  computed: {},
-  watch: {},
   methods: {
     //获取跳转页的商品
     currentchange(page) {
@@ -159,23 +197,12 @@ export default {
       getGoods(this.params).then((res) => {
         this.tableData = res.data;
         //转换布尔值
-        this.tableData.forEach((item) => {
-          if (item.is_on == 1) {
-            item.is_on = true;
-          } else if (item.is_on == 0) {
-            item.is_on = false;
-          }
-        });
-        this.tableData.forEach((item) => {
-          if (item.is_recommend == 1) {
-            item.is_recommend = true;
-          } else if (item.is_recommend == 0) {
-            item.is_recommend = false;
-          }
-        });
+        toBoolean(this.tableData, "is_on");
+        toBoolean(this.tableData, "is_recommend");
         this.total = res.meta.pagination.total;
       });
     },
+    //是否上架
     ison(e) {
       GoodsIsOn(e.id).then((res) => {
         this.$message({
@@ -186,6 +213,7 @@ export default {
         this.getGoodsList();
       });
     },
+    //是否推荐
     isrecommend(e) {
       GoodsIsRecommend(e.id).then((res) => {
         this.$message({
@@ -198,31 +226,51 @@ export default {
     },
     //编辑弹窗初始化商品数据
     handleEdit(e) {
+      console.log(e);
+      console.log(this.goods.category_id);
       this.dialogFormVisible = true;
       this.id = e.id;
-      this.goods.category_id = e.category_id;
+      this.goods.category_id[0] = 1;
+      this.goods.category_id[1] = e.category_id;
       this.goods.title = e.title;
       this.goods.description = e.description;
       this.goods.price = e.price;
       this.goods.stock = e.stock;
       this.goods.cover = e.cover;
       this.goods.details = e.details;
+      console.log(this.goods.category_id);
     },
-    //修改商品数据   ******************************
+    //修改商品数据
     editTure() {
-      editGoods(this.id, this.goods).then((res) => {
-        this.$message({
-          showClose: true,
-          message: "修改成功",
-          type: "success",
-        });
-        this.dialogFormVisible = false;
-        this.getGoodsList();
+      this.$refs.form.validate((valid) => {
+        //如果预校验结果为假就返回
+        if (!valid) return;
+        //为真就提交，先拿到二级分类id
+        this.goods.category_id = this.goods.category_id[1];
+
+        // editGoods(this.id, this.goods).then((res) => {
+        //   this.$message({
+        //     showClose: true,
+        //     message: "修改成功",
+        //     type: "success",
+        //   });
+        //   this.dialogFormVisible = false;
+        //   this.getGoodsList();
+        // });
       });
+    },
+    reset() {
+      //对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
+      this.$refs.form.resetFields();
     },
   },
   created() {
+    //获取商品列表数据
     this.getGoodsList();
+    //获取分类数据给级联组件
+    Category().then((res) => {
+      this.options = res;
+    });
   },
 };
 </script>

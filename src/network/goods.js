@@ -26,7 +26,7 @@ export function GoodsIsRecommend(id) {
     })
 }
 
-//修改商品  *************************************
+//修改商品
 export function editGoods(id, data) {
     return request({
         url: '/api/admin/goods/' + id,

@@ -49,14 +49,14 @@
 
     <!-- 编辑弹窗 -->
     <el-dialog title="编辑分类" v-model="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="分类名称：" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+        <el-form-item label="分类名称：" label-width="100px" prop="name">
+          <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="offClick">取 消</el-button>
           <el-button type="primary" @click="edit">确 定</el-button>
         </span>
       </template>
@@ -66,18 +66,21 @@
 
 <script>
 import { getCategory, editCategory, isStatus } from "@/network/category";
+import { toBoolean } from "@/methods";
 
 export default {
   name: "",
   data() {
     return {
       tableData1: [],
-      formLabelWidth: "100px",
       dialogFormVisible: false,
       id: 0,
-      form: {
-        pid: "",
+      pid: "",
+      ruleForm: {
         name: "",
+      },
+      rules: {
+        name: [{ required: true, message: "请输入分类名称", trigger: "blur" }],
       },
     };
   },
@@ -88,21 +91,10 @@ export default {
     getList() {
       getCategory().then((res) => {
         this.tableData1 = res;
+        //转换布尔型
+        toBoolean(this.tableData1, "status");
         this.tableData1.forEach((item) => {
-          if (item.status == 1) {
-            item.status = true;
-          } else if (item.status == 0) {
-            item.status = false;
-          }
-        });
-        this.tableData1.forEach((item) => {
-          item.children.forEach((item) => {
-            if (item.status == 1) {
-              item.status = true;
-            } else if (item.status == 0) {
-              item.status = false;
-            }
-          });
+          toBoolean(item.children, "status");
         });
       });
     },
@@ -119,21 +111,47 @@ export default {
     },
     //编辑弹窗
     handleEdit(e) {
-      this.form.pid = e.pid;
-      this.form.name = e.name;
+      this.pid = e.pid;
+      this.ruleForm.name = e.name;
       this.id = e.id;
       this.dialogFormVisible = true;
     },
+    offClick() {
+      this.dialogFormVisible = false;
+      //清空表单
+      this.$refs.ruleForm.resetFields();
+    },
     //提交修改分类
     edit() {
-      editCategory(this.id, this.form).then((res) => {
-        this.dialogFormVisible = false;
-        this.$message({
-          showClose: true,
-          message: "修改成功",
-          type: "success",
+      this.$refs.ruleForm.validate((vali) => {
+        //预验证为假就返回
+        if (!vali) return;
+        //为真就提交修改
+        const form = {
+          pid: this.pid,
+          name: this.ruleForm.name,
+        };
+        editCategory(this.id, form).then((res) => {
+          //如果res为假说明修改不能修改
+          if (!res) {
+            this.$message({
+              showClose: true,
+              message: "系统数据禁止编辑, 请自行创建数据",
+              type: "error",
+            });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "修改成功",
+              type: "success",
+            });
+          }
         });
+        //隐藏弹窗 重新请求分类列表数据
+        this.dialogFormVisible = false;
         this.getList();
+        //清空表单
+        this.$refs.ruleForm.resetFields();
       });
     },
   },
