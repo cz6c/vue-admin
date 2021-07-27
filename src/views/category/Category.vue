@@ -132,7 +132,7 @@ export default {
           name: this.ruleForm.name,
         };
         editCategory(this.id, form).then((res) => {
-          //如果res为假说明修改不能修改
+          //如果res为假说明不能修改
           if (!res) {
             this.$message({
               showClose: true,
@@ -145,11 +145,11 @@ export default {
               message: "修改成功",
               type: "success",
             });
+            this.getList();
           }
         });
-        //隐藏弹窗 重新请求分类列表数据
+        //隐藏弹窗
         this.dialogFormVisible = false;
-        this.getList();
         //清空表单
         this.$refs.ruleForm.resetFields();
       });

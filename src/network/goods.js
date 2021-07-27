@@ -43,3 +43,11 @@ export function addGoods(data) {
         data
     })
 }
+
+//商品详情
+export function GoodsDetails(id, params) {
+    return request({
+        url: '/api/admin/goods/' + id,
+        params
+    })
+}

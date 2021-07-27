@@ -261,9 +261,10 @@ export default {
             message: "用户新增成功",
             type: "success",
           });
+          this.getUserList();
         });
         this.addDialogFormVisible = false;
-        this.getUserList();
+
         //清空表单内容
         this.$refs.addRulesForm.resetFields();
       });

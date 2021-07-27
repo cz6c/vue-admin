@@ -113,7 +113,7 @@
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="reset">取 消</el-button>
           <el-button type="primary" @click="editTure">确 定</el-button>
         </span>
       </template>
@@ -127,6 +127,7 @@ import {
   GoodsIsOn,
   GoodsIsRecommend,
   editGoods,
+  GoodsDetails,
 } from "@/network/goods";
 
 import { Category } from "network/category";
@@ -136,6 +137,14 @@ import { toBoolean } from "@/methods";
 export default {
   name: "",
   data() {
+    //自定义检验规则
+    var validatePass = (rule, value, callback) => {
+      if (!value[1]) {
+        callback(new Error("必须选择一个二级分类"));
+      } else {
+        callback();
+      }
+    };
     return {
       //列表数据
       tableData: [],
@@ -161,6 +170,7 @@ export default {
       },
       //配置级联下拉的值
       props: {
+        checkStrictly: true,
         expandTrigger: "hover",
         value: "id",
         label: "name",
@@ -170,6 +180,7 @@ export default {
       rules: {
         category_id: [
           { required: true, message: "请选择商品分类", trigger: "blur" },
+          { validator: validatePass, trigger: "blur" },
         ],
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         description: [
@@ -226,42 +237,55 @@ export default {
     },
     //编辑弹窗初始化商品数据
     handleEdit(e) {
-      console.log(e);
-      console.log(this.goods.category_id);
       this.dialogFormVisible = true;
+      //从商品详情中拿父级分类id
+      const params = { include: "category" };
+      GoodsDetails(e.id, params).then((res) => {
+        //如果父级分类id为0说明该分类为顶级分类
+        res.category.pid == 0
+          ? (this.goods.category_id = [res.category.id])
+          : (this.goods.category_id = [res.category.pid, res.category.id]);
+      });
+      //初始化
       this.id = e.id;
-      this.goods.category_id[0] = 1;
-      this.goods.category_id[1] = e.category_id;
       this.goods.title = e.title;
       this.goods.description = e.description;
       this.goods.price = e.price;
       this.goods.stock = e.stock;
       this.goods.cover = e.cover;
       this.goods.details = e.details;
-      console.log(this.goods.category_id);
     },
     //修改商品数据
     editTure() {
       this.$refs.form.validate((valid) => {
         //如果预校验结果为假就返回
         if (!valid) return;
-        //为真就提交，先拿到二级分类id
+        //为真就提交修改
         this.goods.category_id = this.goods.category_id[1];
-
-        // editGoods(this.id, this.goods).then((res) => {
-        //   this.$message({
-        //     showClose: true,
-        //     message: "修改成功",
-        //     type: "success",
-        //   });
-        //   this.dialogFormVisible = false;
-        //   this.getGoodsList();
-        // });
+        editGoods(this.id, this.goods).then((res) => {
+          if (!res) {
+            this.$message({
+              showClose: true,
+              message: "系统数据禁止编辑, 请自行创建数据",
+              type: "error",
+            });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "修改成功",
+              type: "success",
+            });
+            this.getGoodsList();
+          }
+        });
+        this.dialogFormVisible = false;
+        this.$refs.form.resetFields();
       });
     },
     reset() {
       //对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
       this.$refs.form.resetFields();
+      this.dialogFormVisible = false;
     },
   },
   created() {
