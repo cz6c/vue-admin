@@ -1,16 +1,7 @@
-//把数组中每个对象的某个key属性的1 0属性值转换为布尔型
-export function toBoolean(arr, key) {
-    return arr.forEach((item) => {
-        if (item[key] == 1) {
-            item[key] = true;
-        } else if (item[key] == 0) {
-            item[key] = false;
-        }
-    });
-}
-
-// 防抖函数： 定时器期间，有新操作时，清空旧定时器，重设新定时器
-export function debounce(fn, wait) {
+##防抖函数的使用 
+1. 在定义方法的js文件中导出防抖函数
+```
+ export function debounce(fn, wait) {
     let timer, timeStamp = 0;
     let context, args;
 
@@ -25,7 +16,7 @@ export function debounce(fn, wait) {
     }
 
     return function() {
-        //传进来fn函数的this，和实参
+        //接收fn函数的this，和实参
         context = this;
         args = arguments;
         let now = (new Date()).getTime();
@@ -39,4 +30,24 @@ export function debounce(fn, wait) {
         }
         timeStamp = now;
     }
-}
+} 
+``` 
+2. 在需要用使到的组件中导入防抖函数
+```
+import {  debounce } from "@/methods";
+``` 
+3. 使用
+```
+    //事件名：debounce(事件执行函数,防抖时间)
+    //事件执行函数不能写箭头函数，不然会拿不到this
+    handleChange: debounce(function (e) {
+      seqSwipe(e.id, { seq: e.seq }).then((res) => {
+        this.$message({
+          showClose: true,
+          message: "排序修改成功",
+          type: "success",
+        });
+        this.getList();
+      });
+    }, 500),
+```
