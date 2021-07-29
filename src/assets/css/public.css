@@ -10,3 +10,10 @@
 .box-card {
     margin-top: 30px;
 }
+
+
+/* 页面和表格的距离 */
+
+.el-pagination {
+    margin-top: 20px;
+}
