@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="form">
-      <img src="~@/assets/img/log.png" alt="" />
+      <div class="text">login</div>
       <el-form :model="form">
         <el-form-item>
           <el-input v-model="form.email" placeholder="邮箱"></el-input>
@@ -56,7 +56,8 @@ export default {
   position: relative;
   width: 100%;
   height: 100vh;
-  background-color: #999;
+  background: url(../assets/img/login.png) no-repeat;
+  background-size: cover;
 }
 .form {
   position: absolute;
@@ -65,23 +66,22 @@ export default {
   transform: translate(-50%, -50%);
   width: 400px;
   height: 300px;
-  background-color: #333;
+  background-color: #fff;
+  opacity: 0.6;
+  border-radius: 10px;
 }
-.form img {
-  position: absolute;
-  top: -36px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+.text {
+  margin-top: 26px;
+  text-align: center;
+  font-size: 2em;
+  font-weight: 700;
 }
 .el-form {
-  margin-top: 100px;
+  margin-top: 40px;
   padding: 0 20px;
 }
 .el-button {
-  margin: 18px 36px;
+  margin: 10px 36px;
   width: 80%;
 }
 </style>
