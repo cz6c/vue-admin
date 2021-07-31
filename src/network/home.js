@@ -6,3 +6,10 @@ export function getMenus() {
         url: '/api/admin/menus',
     })
 }
+
+//首页统计
+export function getindex() {
+    return request({
+        url: '/api/admin/index'
+    })
+}

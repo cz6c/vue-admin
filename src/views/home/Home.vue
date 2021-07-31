@@ -3,8 +3,8 @@
     <el-container>
       <!-- 顶部 -->
       <el-header height="65px">
-        <span class="log">企鹅后台管理系统</span>
-        <span class="el-icon-s-operation" @click="swith"></span>
+        <span class="log">MB售后产品服务管理平台</span>
+        <button class="el-icon-s-operation" @click="swith"></button>
         <div class="right">
           <el-dropdown>
             <span class="el-dropdown-link">
@@ -148,9 +148,13 @@ export default {
 .log {
   display: inline-block;
   width: 180px;
+  font-size: 0.6em;
 }
 .el-icon-s-operation {
   font-size: 1.5em;
+  background-color: #212121;
+  border: 0;
+  color: #fff;
 }
 .right {
   display: inline-block;
@@ -166,7 +170,7 @@ export default {
   width: 45px;
 }
 .el-dropdown-link {
-  color: #fff;
+  color: #d6d6d6;
   font-size: 1.2em;
 }
 </style>
