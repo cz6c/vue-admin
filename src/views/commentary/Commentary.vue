@@ -84,10 +84,7 @@ export default {
     getList() {
       const params = { include: "goods" };
       getComments(params).then((res) => {
-        console.log(1);
         this.comments = res.data;
-        console.log(res.data[0].reply);
-        console.log(this.comments[0].reply);
       });
     },
     //回复弹窗

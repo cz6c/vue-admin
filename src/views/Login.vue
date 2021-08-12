@@ -44,6 +44,7 @@ export default {
           message: "登录成功",
           type: "success",
         });
+        //跳到首页
         this.$router.push("/home");
       });
     },

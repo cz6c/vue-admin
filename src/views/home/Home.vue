@@ -18,7 +18,7 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <img :src="user.avatar_url" alt="" />
+          <img :src="user.avatar" alt="" />
         </div>
       </el-header>
       <el-container>
@@ -71,8 +71,8 @@
 </template>
 
 <script>
-import { getMenus } from "network/home";
 import { getuser } from "network/user";
+import { getMenus } from "network/home";
 
 export default {
   name: "",
@@ -110,10 +110,13 @@ export default {
       this.isCollapse = !this.isCollapse;
     },
   },
-  mounted() {
+  created() {
     //获取菜单栏信息
     getMenus().then((res) => {
+      //缓存菜单数据到本地中用于路由权限配置
+      window.localStorage.setItem("menuList", JSON.stringify(res));
       this.menusList = res;
+      console.log(res);
     });
     //获取用户登录信息
     getuser().then((res) => {
