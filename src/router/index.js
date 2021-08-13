@@ -74,6 +74,12 @@ const routes = [{
                 component: () =>
                     import ('@/views/swipe/AddSwipe'),
                 meta: { dynamic: true }
+            },
+            {
+                path: '/40',
+                component: () =>
+                    import ('@/views/menu/menu40'),
+                meta: { dynamic: true }
             }
         ]
     }

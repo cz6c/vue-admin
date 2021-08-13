@@ -14,7 +14,8 @@
             :props="props"
             clearable
             placeholder="请选择分类"
-          ></el-cascader>
+          >
+          </el-cascader>
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="goods.title"></el-input>
@@ -49,6 +50,7 @@ import { Category } from "network/category";
 
 export default {
   name: "",
+
   data() {
     return {
       goods: {

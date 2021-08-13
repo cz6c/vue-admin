@@ -4,13 +4,7 @@
 
 
 <script>
-import { initDynamicRoutes } from "@/router";
-
-export default {
-  created() {
-    // initDynamicRoutes();
-  },
-};
+export default {};
 </script>
 
 
